@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
-namespace DrawingConsole.Shape
+namespace DrawingConsole.Shapes
 {
-    public class Point : IShape
+    [Serializable]
+    public class Point
     {
-        public int X;
-        public int Y;
+        [JsonPropertyName("X")]
+        public int X { get; set; }
+        [JsonPropertyName("Y")]
+        public int Y { get; set; }
 
         public Point()
         {
@@ -18,10 +23,6 @@ namespace DrawingConsole.Shape
             X = x;
             Y = y;
         }
-
-        public double Square { get { return 0; } }
-
-        public double Perimeter { get { return 0; } }
 
         public static double Length(Point A,Point B)
         {

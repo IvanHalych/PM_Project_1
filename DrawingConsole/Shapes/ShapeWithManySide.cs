@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DrawingConsole.Shape
+namespace DrawingConsole.Shapes
 {
-    class ShapeWithManySide : IShape
+    class ShapeWithManySide : Shape
     {
-        public ShapeWithManySide(Point[] points)
+        public ShapeWithManySide(Point[] points,int position):base(position)
         {
             Points = points;
         }
-
-        public Point[] Points{get;}
-        public double Square
+        public override double Square
         {
             get
             {
@@ -32,7 +30,7 @@ namespace DrawingConsole.Shape
             }
         }
 
-        public double Perimeter
+        public override double Perimeter
         {
             get
             {
