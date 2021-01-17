@@ -2,12 +2,20 @@
 using System.Collections.Generic;
 using System.Text;
 using DrawingConsole.Shapes;
+using System.Text.Json.Serialization;
 
 namespace DrawingConsole
 {
-    class Picture
+    [Serializable]
+    public class Picture
     {
+        public Picture(string name)
+        {
+            Name = name;
+        }
+        [JsonPropertyName("Name")]
         public string Name { get; set; }
-        public Shape[] shapes { get; set; }
+        [JsonPropertyName("Shapes")]
+        public List<Shape> shapes { get; set; }
     }
 }

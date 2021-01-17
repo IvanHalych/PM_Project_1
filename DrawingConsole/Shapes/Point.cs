@@ -28,5 +28,12 @@ namespace DrawingConsole.Shapes
         {
             return Math.Sqrt(Math.Pow(A.X-B.X,2)+Math.Pow(A.Y-B.Y,2));
         }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Point point &&
+                   X == point.X &&
+                   Y == point.Y;
+        }
     }
 }

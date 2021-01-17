@@ -6,7 +6,7 @@ namespace DrawingConsole.Shapes
 {
     class ShapeWithManySide : Shape
     {
-        public ShapeWithManySide(Point[] points,int position):base(position)
+        public ShapeWithManySide(Point[] points,int position)
         {
             Points = points;
         }

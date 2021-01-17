@@ -10,13 +10,13 @@ namespace DrawingConsole
 {
     class FileWork
     {
-        public static void Save(string name, Shape[] shapes)
+        public static void Save(Picture picture)
         {
-            File.WriteAllText($"{name}.json",JsonSerializer.Serialize<Shape[]>(shapes));
+            File.WriteAllText($"{picture.Name}.json",JsonSerializer.Serialize<Picture>(picture));
         }
-        public static Shape[] Read(string name)
+        public static Picture Read(string name)
         {
-            return JsonSerializer.Deserialize<Shape[]>(File.ReadAllText($"{name}.json"));
+            return JsonSerializer.Deserialize<Picture>(File.ReadAllText($"{name}.json"));
         }
     }
 }

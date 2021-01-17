@@ -4,10 +4,10 @@ using System.Text;
 
 namespace DrawingConsole.Shapes
 {
-    class Line : Shape
+    public class Line : Shape
     {
 
-        public Line(Point a, Point b,int position):base(position)
+        public Line(Point a, Point b,int position)
         {
             NameType = "Line";
             Points = new Point[] { a, b };

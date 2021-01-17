@@ -7,7 +7,7 @@ namespace DrawingConsole.Shapes
     class Circle : Shape
     {
 
-        public Circle(Point x, Point y, int position):base(position)
+        public Circle(Point x, Point y, int position)
         {
             NameType = "Circle";
             Points = new Point[] { x, y };

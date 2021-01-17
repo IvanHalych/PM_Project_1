@@ -9,10 +9,6 @@ namespace DrawingConsole.Shapes
     [Serializable]
     public abstract class Shape
     {
-        public Shape(int position)
-        {
-            Position = position;
-        }
         [JsonPropertyName("Name")]
         public string NameType { get; set; }
         [JsonPropertyName("Points")]
