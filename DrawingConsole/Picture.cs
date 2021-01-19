@@ -6,9 +6,12 @@ using System.Text.Json.Serialization;
 
 namespace DrawingConsole
 {
-    [Serializable]
     public class Picture
     {
+        public Picture()
+        {
+        }
+
         public Picture(string name)
         {
             Name = name;

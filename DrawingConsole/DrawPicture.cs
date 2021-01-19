@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using DrawingConsole.Exceptions;
 using DrawingConsole.Shapes;
 namespace DrawingConsole
 {
     public static class DrawPicture
     {
-        public static Line  CreateLine()
+        static readonly string MenuDrawInstruction = $"| {(char)0x2190}-left | {(char)0x2191}-up | {(char)0x2192}-right | {(char)0x2193}-down | Enter-enter | Backspase-back | Tab-Save |";
+
+        public static Picture CreateShape<T>(Picture picture,bool fill, string Name) where T : Shape,new()
         {
-            Point a =null;
+            DrawingConsole.DrawMenu.PresentInstruction = MenuDrawInstruction;
+            Drawing.ClearPicture();
+            DrawShapes(picture.shapes);
+            List<Point> points = new List<Point>();
             Console.SetCursorPosition(DrawMenu.LeftPicture, DrawMenu.TopPicture);
             Console.CursorVisible = true;
             while (true)
@@ -16,48 +22,117 @@ namespace DrawingConsole
                 switch (Console.ReadKey(true).Key)
                 {
                     case ConsoleKey.DownArrow:
-                        Console.SetCursorPosition(Console.CursorLeft,Console.CursorTop + 1);
-                        if (a != null)
-                            DrawLine(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),0);
+                        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+                        if (points.Count != 0)
+                        {
+                            List<Point> list = new List<Point>(points)
+                            {
+                                new Point(GetPointX(), GetPointY())
+                            };
+                            List<Shape> listShapes = new List<Shape>(picture.shapes)
+                            {
+                                new T() { NameType = Name, Fill = fill, Points = list }
+                            };
+                            DrawShapes(listShapes);
+                        }
+                        else
+                        {
+                            DrawShapes(picture.shapes);
+                        }
                         break;
                     case ConsoleKey.UpArrow:
                         if (Console.CursorTop != DrawMenu.TopPicture)
                         {
                             Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                            if (a != null)
-                                DrawLine(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),0);
+                            if (points.Count != 0)
+                            {
+                                List<Point> list = new List<Point>(points)
+                                {
+                                    new Point(GetPointX(), GetPointY())
+                                };
+                                List<Shape> listShapes = new List<Shape>(picture.shapes)
+                                {
+                                    new T() { NameType = Name, Fill = fill, Points = list }
+                                };
+                                DrawShapes(listShapes);
+                            }
+                            else
+                            {
+                                DrawShapes(picture.shapes);
+                            }
                         }
                         break;
                     case ConsoleKey.LeftArrow:
                         if (Console.CursorLeft != DrawMenu.LeftPicture)
                         {
                             Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                            if (a != null)
-                                DrawLine(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),0);
+                            if (points.Count != 0)
+                            {
+                                List<Point> list = new List<Point>(points)
+                                {
+                                    new Point(GetPointX(), GetPointY())
+                                };
+                                List<Shape> listShapes = new List<Shape>(picture.shapes)
+                                {
+                                    new T() { NameType = Name, Fill = fill, Points = list }
+                                };
+                                DrawShapes(listShapes);
+                            }
+                            else
+                            {
+                                DrawShapes(picture.shapes);
+                            }
                         }
                         break;
                     case ConsoleKey.RightArrow:
                         Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
-                        if (a != null)
-                            DrawLine(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),0);
-                        break;
-                    case ConsoleKey.Enter:
-                        if (a==null)
+                        if (points.Count != 0)
                         {
-                            a = new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture);
+                            List<Point> list = new List<Point>(points)
+                            {
+                                new Point(GetPointX(), GetPointY())
+                            };
+                            List<Shape> listShapes = new List<Shape>(picture.shapes)
+                            {
+                                new T() { NameType = Name, Fill = fill, Points = list }
+                            };
+                            DrawShapes(listShapes);
                         }
                         else
                         {
-                            return new Line(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
+                            DrawShapes(picture.shapes);
                         }
                         break;
+                    case ConsoleKey.Enter:
+                        Point a = new Point(GetPointX(), GetPointY());
+                        if(points.Count == 0)
+                        {
+                            points.Add(a);
+                        } 
+                        else if ((Name =="Line")&&(points.Count == 1)&&(!points[0].Equals(a))){
+                            points.Add(a);
+                            picture.shapes.Add(new Line(fill, points));
+                            Console.CursorVisible = false;
+                            return picture;
+                        }
+                        else if (points.All(p => !p.Equals(a)))
+                            points.Add(a);
+                        break;
+                    case ConsoleKey.Tab:
+                        List<Shape> listShapesDone = new List<Shape>(picture.shapes)
+                        {
+                            new T() { NameType = Name, Fill = fill, Points = points }
+                        };
+                        picture.shapes = listShapesDone;
+                        Console.CursorVisible = false;
+                        return picture;
                     case ConsoleKey.Escape:
-                        return null;
+                        throw new ExitException();
                     case ConsoleKey.Backspace:
-                        return null;
+                        Console.CursorVisible = false;
+                        return picture;
                 }
             }
-            
         }
         public static void DrawLine(Point p1,Point p2, int position)
         {
@@ -125,60 +200,6 @@ namespace DrawingConsole
             }
             Console.SetCursorPosition(left,top);
         }
-
-        internal static Circle CreateCircle(bool fill)
-        {
-            Point a = null;
-            Console.SetCursorPosition(DrawMenu.LeftPicture, DrawMenu.TopPicture);
-            Console.CursorVisible = true;
-            while (true)
-            {
-                switch (Console.ReadKey(true).Key)
-                {
-                    case ConsoleKey.DownArrow:
-                        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
-                        if (a != null)
-                            DrawCircle(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture), 0,fill);
-                        break;
-                    case ConsoleKey.UpArrow:
-                        if (Console.CursorTop != DrawMenu.TopPicture)
-                        {
-                            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                            if (a != null)
-                                DrawCircle(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture), 0,fill);
-                        }
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        if (Console.CursorLeft != DrawMenu.LeftPicture)
-                        {
-                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                            if (a != null)
-                                DrawCircle(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture), 0,fill);
-                        }
-                        break;
-                    case ConsoleKey.RightArrow:
-                        Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
-                        if (a != null)
-                            DrawCircle(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),0,fill);
-                        break;
-                    case ConsoleKey.Enter:
-                        if (a == null)
-                        {
-                            a = new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture);
-                        }
-                        else
-                        {
-                            return new Circle(a, new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture),fill);
-                        }
-                        break;
-                    case ConsoleKey.Escape:
-                        return null;
-                    case ConsoleKey.Backspace:
-                        return null;
-                }
-            }
-        }
-
         public static void DrawCircle(Point p1,Point p2, int position, bool fill)
         {
             int left = Console.CursorLeft;
@@ -216,76 +237,6 @@ namespace DrawingConsole
                 }
             Console.SetCursorPosition(left, top);
         }
-        internal static ShapeWithManySide CreateShapeWithManySide(bool fill)
-        {
-            List<Point> points = new List<Point>();
-            Console.SetCursorPosition(DrawMenu.LeftPicture, DrawMenu.TopPicture);
-            Console.CursorVisible = true;
-            while (true)
-            {
-                switch (Console.ReadKey(true).Key)
-                {
-                    case ConsoleKey.DownArrow:
-                        Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
-                        if (points.Count != 0)
-                        {
-                            List<Point> list = new List<Point>(points);
-                            list.Add(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
-                            DrawingConsole.Program.ClearPicture();
-                            DrawShapeWithManySise(list, 0, fill);
-                        }
-
-                        break;
-                    case ConsoleKey.UpArrow:
-                        if (Console.CursorTop != DrawMenu.TopPicture)
-                        {
-                            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
-                            if (points.Count != 0)
-                            {
-                                List<Point> list = new List<Point>(points);
-                                list.Add(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
-                                DrawingConsole.Program.ClearPicture();
-                                DrawShapeWithManySise(list, 0, fill);
-                            }
-                        }
-                        break;
-                    case ConsoleKey.LeftArrow:
-                        if (Console.CursorLeft != DrawMenu.LeftPicture)
-                        {
-                            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                            if (points.Count != 0)
-                            {
-                                List<Point> list = new List<Point>(points);
-                                list.Add(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
-                                DrawingConsole.Program.ClearPicture();
-                                DrawShapeWithManySise(list, 0, fill);
-                            }
-                        }
-                        break;
-                    case ConsoleKey.RightArrow:
-                        Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
-                        if (points.Count != 0)
-                        {
-                            List<Point> list = new List<Point>(points);
-                            list.Add(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
-                            DrawingConsole.Program.ClearPicture();
-                            DrawShapeWithManySise(list, 0, fill);
-                        }
-                        break;
-                    case ConsoleKey.Enter:
-                        if (points.Count!=0&&points[0].Equals(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture)))
-                            return new ShapeWithManySide(points.ToArray(), fill);
-                        points.Add(new Point(Console.CursorLeft - DrawMenu.LeftPicture, Console.CursorTop - DrawMenu.TopPicture));
-                        break;
-                    case ConsoleKey.Escape:
-                        return null;
-                    case ConsoleKey.Backspace:
-                        return null;
-
-                }
-            }
-        }
-
         public static void DrawShapeWithManySise(List<Point> list, int position,bool fill)
         {
             int left = Console.CursorLeft;
@@ -396,6 +347,25 @@ namespace DrawingConsole
             }
             Console.SetCursorPosition(left, top);
             return points;
+        }
+        public static void DrawShapes(List<Shape> shapes)
+        {
+            int left = Console.CursorLeft;
+            int top = Console.CursorTop;
+            Drawing.ClearPicture();
+            for( int i = 0; i < shapes.Count; i++)
+            {
+                shapes[i].Draw(shapes.Count - 1 - i);
+            }
+            Console.SetCursorPosition(left, top);
+        }
+        public static int GetPointX()
+        {
+            return Console.CursorLeft - DrawMenu.LeftPicture;
+        }
+        public static int GetPointY()
+        {
+            return Console.CursorTop - DrawMenu.TopPicture;
         }
     }
 }

@@ -6,11 +6,13 @@ namespace DrawingConsole.Shapes
 {
     public class Line : Shape
     {
-
-        public Line(Point a, Point b)
+        public Line()
+        { }
+        public Line(bool fill , List<Point> points)
         {
+            Fill = fill;
+            Points = points;
             NameType = "Line";
-            Points = new Point[] { a, b };
         }
 
         public Point A
@@ -30,5 +32,10 @@ namespace DrawingConsole.Shapes
         public override double Square { get { return 0; } }
 
         public override double Perimeter { get { return 0; } }
+
+        public override void Draw(int position)
+        {
+            DrawPicture.DrawLine(A,B,position);
+        }
     }
 }

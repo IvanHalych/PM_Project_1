@@ -6,7 +6,6 @@ using System.Text.Json.Serialization;
 
 namespace DrawingConsole.Shapes
 {
-    [Serializable]
     public class Point
     {
         [JsonPropertyName("X")]
@@ -34,6 +33,11 @@ namespace DrawingConsole.Shapes
             return obj is Point point &&
                    X == point.X &&
                    Y == point.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
         }
     }
 }

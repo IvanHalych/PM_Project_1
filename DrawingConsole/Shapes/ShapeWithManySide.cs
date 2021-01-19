@@ -6,9 +6,13 @@ namespace DrawingConsole.Shapes
 {
     class ShapeWithManySide : Shape
     {
-        public bool Fill { get; set; }
-        public ShapeWithManySide(Point[] points,bool fill)
+        public ShapeWithManySide()
         {
+        }
+
+        public ShapeWithManySide(bool fill, List<Point> points)
+        {
+            NameType = "ShapeWithManySide";
             Fill = fill;
             Points = points;
         }
@@ -17,9 +21,9 @@ namespace DrawingConsole.Shapes
             get
             {
                 double sum   = 0;
-                for (int i = 0; i < Points.Length; i++)
+                for (int i = 0; i < Points.Count; i++)
                 {
-                    if (i != Points.Length - 1)
+                    if (i != Points.Count - 1)
                     {
                         sum += (Points[i].X * Points[i + 1].Y -Points[i].Y*Points[i+1].X);
                     }
@@ -37,9 +41,9 @@ namespace DrawingConsole.Shapes
             get
             {
                 double perimeter = 0;
-                for(int i = 0; i < Points.Length; i++)
+                for(int i = 0; i < Points.Count; i++)
                 {
-                    if (i != Points.Length - 1)
+                    if (i != Points.Count - 1)
                     {
                         perimeter += Point.Length(Points[i], Points[i + 1]);
                     }
@@ -50,6 +54,11 @@ namespace DrawingConsole.Shapes
                 }
                 return perimeter;
             }
+        }
+
+        public override void Draw(int position)
+        {
+            DrawPicture.DrawShapeWithManySise(Points, position, Fill);
         }
     }
 }

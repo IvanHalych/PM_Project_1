@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DrawingConsole.Exceptions
 {
-    public class ExitException
+    public class ExitException:Exception
     {
     }
 }

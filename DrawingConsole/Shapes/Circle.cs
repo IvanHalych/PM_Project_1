@@ -4,15 +4,17 @@ using System.Text;
 
 namespace DrawingConsole.Shapes
 {
-    class Circle : Shape
+    public class Circle : Shape
     {
-        public bool Fill { get; set; }
+        public Circle()
+        {
+        }
 
-        public Circle(Point x, Point y, bool fill)
+        public Circle(bool fill, List<Point> points)
         {
             NameType = "Circle";
-            Points = new Point[] { x, y };
             Fill = fill;
+            Points = points;
         }
 
         public Point X
@@ -37,6 +39,11 @@ namespace DrawingConsole.Shapes
         public override double Perimeter
         {
             get { return 2 * Math.PI * R; }
+        }
+
+        public override void Draw(int position)
+        {
+            DrawPicture.DrawCircle(Points[0], Points[1], position, Fill);
         }
     }
 }

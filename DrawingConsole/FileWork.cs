@@ -16,7 +16,25 @@ namespace DrawingConsole
         }
         public static Picture Read(string name)
         {
-            return JsonSerializer.Deserialize<Picture>(File.ReadAllText($"{name}.json"));
+            Picture p= JsonSerializer.Deserialize<Picture>(File.ReadAllText($"{name}"));
+            List<Shape> list = new List<Shape>();
+            p.shapes.ForEach(s =>
+            {
+                if (s.NameType == "Line")
+                {
+                    list.Add(new Line(false,s.Points));
+                }
+                else if (s.NameType == "Circle")
+                {
+                    list.Add(new Circle(s.Fill,s.Points));
+                }
+                else if (s.NameType == "ShapeWithManySide")
+                {
+                    list.Add(new ShapeWithManySide(s.Fill, s.Points));
+                }
+            });
+            p.shapes = list;
+            return p;
         }
     }
 }

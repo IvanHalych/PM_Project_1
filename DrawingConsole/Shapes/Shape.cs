@@ -1,20 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace DrawingConsole.Shapes
 {
-    [Serializable]
-    public abstract class Shape
+    public class Shape
     {
+        public Shape()
+        {
+        }
+
+        public bool Fill { get; set; }
+
         [JsonPropertyName("Name")]
         public string NameType { get; set; }
         [JsonPropertyName("Points")]
-        public Point[] Points { get; set; }
-        public int Position { get; set; }
+        public List<Point> Points { get; set; }
         public virtual double Square { get; }
         public virtual double Perimeter { get; }
+
+        public virtual void Draw(int position) { }
     }
 }

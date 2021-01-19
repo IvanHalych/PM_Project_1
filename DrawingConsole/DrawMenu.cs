@@ -8,14 +8,23 @@ namespace DrawingConsole
     {
         public static int TopPicture { get; set; } = 0;
         public static int LeftPicture { get; set; } = 0;
-        public static string[] PresentMenu { get; set; }
-        public static int PositionMenu { get; set; } = -1;
-        public static void DoDrawMenu(string[] menu)
+        static string[] presentMenu;
+        public static string[] PresentMenu
         {
-            if(PresentMenu!=menu)
-            PositionMenu = -1;
-            PresentMenu = menu;
-            
+            get
+            {
+                return presentMenu;
+            } 
+            set 
+            {
+                PositionMenu = -1;
+                presentMenu = value;
+            }
+        }
+        public static string PresentInstruction { get; set; }
+        public static int PositionMenu { get; set; } = -1;
+        public static void TryDrawMenu(string[] menu)
+        {            
             Console.SetCursorPosition(0, TopPicture);
             int max = 0;
             for (int i = 0; i < menu.Length; i++)
@@ -38,16 +47,15 @@ namespace DrawingConsole
             }
 
         }
-        public static void DrawMenuInstruction()
+        public static void DrawMenuInstruction(string str)
         {
-            string str = $"| {(char)0x2191}-up | {(char)0x2193}-down | Enter-enter | Backspase-back | Esc-Exit |";
             for(int i = 0; i < Console.WindowWidth; i++)
             {
                 Console.Write("-");
             }
             Console.WriteLine("");
             Console.WriteLine(str);
-            for (int i = 0; i < str.Length; i++)
+            for (int i = 0; i < Console.WindowWidth; i++)
             {
                 Console.Write("-");
             }
@@ -55,10 +63,12 @@ namespace DrawingConsole
             TopPicture = Console.CursorTop;
         }
 
-        public static void DrawMenuItemSelect()
+        public static void DrawMenuItemSelect(Picture picture)
         {
+
             Console.CursorVisible = false;
-            DoDrawMenu(PresentMenu);
+            Drawing.ClearPicture();
+            DrawPicture.DrawShapes(picture.shapes);
             ConsoleColor consoleColor = Console.BackgroundColor;
             Console.BackgroundColor = Console.ForegroundColor;
             Console.ForegroundColor = consoleColor;
