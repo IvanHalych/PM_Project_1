@@ -6,8 +6,10 @@ namespace DrawingConsole.Shapes
 {
     class ShapeWithManySide : Shape
     {
-        public ShapeWithManySide(Point[] points,int position)
+        public bool Fill { get; set; }
+        public ShapeWithManySide(Point[] points,bool fill)
         {
+            Fill = fill;
             Points = points;
         }
         public override double Square

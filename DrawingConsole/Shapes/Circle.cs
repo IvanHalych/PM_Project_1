@@ -6,11 +6,13 @@ namespace DrawingConsole.Shapes
 {
     class Circle : Shape
     {
+        public bool Fill { get; set; }
 
-        public Circle(Point x, Point y, int position)
+        public Circle(Point x, Point y, bool fill)
         {
             NameType = "Circle";
             Points = new Point[] { x, y };
+            Fill = fill;
         }
 
         public Point X

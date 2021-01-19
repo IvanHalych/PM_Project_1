@@ -7,7 +7,7 @@ namespace DrawingConsole.Shapes
     public class Line : Shape
     {
 
-        public Line(Point a, Point b,int position)
+        public Line(Point a, Point b)
         {
             NameType = "Line";
             Points = new Point[] { a, b };

@@ -16,6 +16,6 @@ namespace DrawingConsole
         [JsonPropertyName("Name")]
         public string Name { get; set; }
         [JsonPropertyName("Shapes")]
-        public List<Shape> shapes { get; set; }
+        public List<Shape> shapes { get; set; } = new List<Shape>();
     }
 }

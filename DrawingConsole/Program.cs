@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.IO;
 
 namespace DrawingConsole
 {
     class Program
     {
-        
         static string[] headMenu = new string[] { "File", "Draw" };
         static string[] fileMenu = new string[] { "NewFile", "Open","Save" };
         static string[] drawMenu = new string[] { "NewDraw", "Change", "Delete" };
@@ -22,6 +22,8 @@ namespace DrawingConsole
             pairs.Add("Draw", DrawMenu);
             pairs.Add("NewDraw", NewDrawMenu);
             pairs.Add("Line", CreateLine);
+            pairs.Add("Circle", CreateCircle);
+            pairs.Add("Shape With Many Side", CreateShape);
             pairs.Add("NewFile", NewFile);
             pairs.Add("Save", Save);
             pairs.Add("Open", Open);
@@ -60,6 +62,82 @@ namespace DrawingConsole
             }
         }
 
+        private static void CreateShape()
+        {
+            while (true)
+            {
+                Console.Clear();
+                DrawingConsole.DrawMenu.DrawMenuInstruction();
+                DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                Console.SetCursorPosition(DrawingConsole.DrawMenu.LeftPicture, DrawingConsole.DrawMenu.TopPicture);
+                Console.Write("How draw Shape(fill/empty): ");
+                Console.CursorVisible = true;
+                string input = Console.ReadLine();
+                if (input == "fill")
+                {
+                    Console.Clear();
+                    DrawingConsole.DrawMenu.DrawMenuInstruction();
+                    DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                    picture.shapes.Add(DrawPicture.CreateShapeWithManySide(true));
+                    Console.CursorVisible = false;
+                    break;
+                }
+                else if (input == "empty")
+                {
+                    Console.Clear();
+                    DrawingConsole.DrawMenu.DrawMenuInstruction();
+                    DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                    picture.shapes.Add(DrawPicture.CreateShapeWithManySide(false));
+                    Console.CursorVisible = false;
+                    break;
+                }
+                else
+                {
+                    Console.CursorLeft = DrawingConsole.DrawMenu.LeftPicture;
+                    Console.Write("Error input");
+                    Console.ReadKey();
+                }
+            }
+        }
+
+        private static void CreateCircle()
+        {
+            while (true)
+            {
+                Console.Clear();
+                DrawingConsole.DrawMenu.DrawMenuInstruction();
+                DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                Console.SetCursorPosition(DrawingConsole.DrawMenu.LeftPicture, DrawingConsole.DrawMenu.TopPicture);
+                Console.Write("How draw Circle(fill/empty): ");
+                Console.CursorVisible = true;
+                string input = Console.ReadLine();
+                if (input =="fill")
+                {
+                    Console.Clear();
+                    DrawingConsole.DrawMenu.DrawMenuInstruction();
+                    DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                    picture.shapes.Add(DrawPicture.CreateCircle(true));
+                    Console.CursorVisible = false;
+                    break;
+                }
+                else if (input == "empty")
+                {
+                    Console.Clear();
+                    DrawingConsole.DrawMenu.DrawMenuInstruction();
+                    DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+                    picture.shapes.Add(DrawPicture.CreateCircle(false));
+                    Console.CursorVisible = false;
+                    break;
+                }
+                else
+                {
+                    Console.CursorLeft = DrawingConsole.DrawMenu.LeftPicture;
+                    Console.Write("Error input");
+                    Console.ReadKey();
+                }
+            }
+        }
+
         private static void Open()
         {
             while (true)
@@ -74,8 +152,15 @@ namespace DrawingConsole
                 if (regex.IsMatch(intput))
                 {
                     Console.CursorLeft = DrawingConsole.DrawMenu.LeftPicture;
-                    Console.Write("File open");
-                    picture = FileWork.Read(intput);
+                    try
+                    {
+                        picture = FileWork.Read(intput);
+                        Console.Write("File open");
+                    }
+                    catch(FileNotFoundException)
+                    {
+                        Console.Write("File Not Found");
+                    }
                     break;
                 }
                 else
@@ -93,8 +178,8 @@ namespace DrawingConsole
 
         private static void CreateLine()
         {
-            picture = new Picture("aaa");
             picture.shapes.Add(DrawPicture.CreateLine());
+            BackSpaceMenu();
         }
 
         private static void BackSpaceMenu()
@@ -120,16 +205,25 @@ namespace DrawingConsole
         }
         static void NewDrawMenu()
         {
+            
             StackMenu.Push(DrawingConsole.DrawMenu.PresentMenu);
             Console.Clear();
             DrawingConsole.DrawMenu.DrawMenuInstruction();
             DrawingConsole.DrawMenu.DoDrawMenu(newDrawMenu);
+            if (picture == null)
+            {
+                NewFile();
+                NewDrawMenu();
+            }
         }
         public static void ClearPicture()
         {
+            int left = Console.CursorLeft;
+            int top = Console.CursorTop;
             Console.Clear();
             DrawingConsole.DrawMenu.DrawMenuInstruction();
             DrawingConsole.DrawMenu.DoDrawMenu(DrawingConsole.DrawMenu.PresentMenu);
+            Console.SetCursorPosition(left, top);
         }
         static void NewFile()
         {
